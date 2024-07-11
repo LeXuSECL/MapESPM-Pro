@@ -6,3 +6,9 @@ The physics-based Electrochemical Single Particle Model (ESPM) offers significan
 Commercially available COMSOL Multiphysics® software is widely used for simulating both the Doyle-Fuller-Newman (DFN) model and the Single Particle Model (SPM). By integrating COMSOL® with MATLAB® through LiveLink™, researchers can perform parameter identification for the DFN and SPM models. However, a similar framework for the Electrochemical Single Particle Model (ESPM) has yet to be proposed. Furthermore, the high licensing costs of COMSOL present a significant barrier to code accessibility and collaboration among researchers. On the other hand, several open-source ESPM model simulation tools, such as PyBaMM, SPMeT, and Spectral Li-ion SPM, are available. Despite their accessibility, none of these open-source tools currently offer parameter identification capabilities using experimental data.
 
 In addition to parameter identification, mass-preserving properties are critical when implementing battery models for long-term real-world applications. A mass-conserved battery model ensures that there is no accumulated numerical error over time, which is essential for maintaining the accuracy and reliability of simulations. Among above mentioned software/tools, PyBaMM is the only software that solve ESPM model governing equations using a mass-preserving numerical finite volume method (FVM) scheme.
+
+# Software dependencies
+MATLAB 2018b and later
+MATLAB Global Optimization Toolbox
+MATLAB Parallel Computing Toolbox
+CasADi
