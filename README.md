@@ -9,6 +9,9 @@ In addition to parameter identification, mass-preserving properties are critical
 
 # Software dependencies
 MATLAB 2018b and later
+
 MATLAB Global Optimization Toolbox
+
 MATLAB Parallel Computing Toolbox
+
 CasADi
