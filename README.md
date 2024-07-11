@@ -12,6 +12,12 @@ In addition to parameter identification, mass-preserving properties are critical
 - Correlation analysis of model parameters
 - Multi-step identification of model parameters based purely on current-voltage data
 - Battery simulator for voltage and state of charge (SOC)
+
+# Examples
+You will find example codes that will help you get started.
+- Sensitivity_and_Correlation_Analysis: examples showing how to perform sensitivity and correlation analysis for ESPM model.
+
+  run "LSA_CA_main.m"
   
 # Software dependencies
 - MATLAB 2018b and later
