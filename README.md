@@ -7,11 +7,14 @@ Commercially available COMSOL Multiphysics® software is widely used for simulat
 
 In addition to parameter identification, mass-preserving properties are critical when implementing battery models for long-term real-world applications. A mass-conserved battery model ensures that there is no accumulated numerical error over time, which is essential for maintaining the accuracy and reliability of simulations. Among above mentioned software/tools, PyBaMM is the only software that solve ESPM model governing equations using a mass-preserving numerical finite volume method (FVM) scheme.
 
+# What can MapESPM-Pro do?
+- Local sensitivity analysis of model parameters
+- Correlation analysis of model parameters
+- Multi-step identification of model parameters based purely on current-voltage data
+- Battery simulator for voltage and state of charge (SOC)
+  
 # Software dependencies
 - MATLAB 2018b and later
-
 - MATLAB Global Optimization Toolbox
-
 - MATLAB Parallel Computing Toolbox
-
 - CasADi
