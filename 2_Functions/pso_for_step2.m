@@ -12,7 +12,7 @@ refsocn=data.refsocn;
 profile_flag=data.profile_flag;
 
 if profile_flag==0
-tot_obj_err=0.0045;
+tot_obj_err=0.005;
 elseif profile_flag==2
 tot_obj_err=0.0055;
 elseif profile_flag==3
