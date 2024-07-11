@@ -1,4 +1,5 @@
 # MapESPM-Pro: Mass-Preserving Extended Single Particle Model with Parameter Optimization for Control-Oriented Applications
+This toolbox incorporates an identification algorithm that enables users to determine model parameters for any type of lithium-ion battery using current-voltage experimental data. By formulating an optimization problem, this toolbox minimizes the difference between simulated and experimentally measured voltage and state-of-charge (SOC) data to identify the parameters.
 
 # Why MapESPM-Pro is needed?
 The physics-based Electrochemical Single Particle Model (ESPM) offers significantly lower complexity compared to the Doyle-Fuller-Newman (DFN) model, making it suitable for on-board applications in Battery Management Systems (BMS). However, to accurately predict the dynamic behavior of actual batteries, the ESPM requires precise calibration of its parameters. Unfortunately, existing ESPM modeling tools lack the capability for parameter identification.
