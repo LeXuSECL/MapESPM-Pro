@@ -18,6 +18,9 @@ You will find example codes that will help you get started.
 - Sensitivity_and_Correlation_Analysis: examples showing how to perform sensitivity and correlation analysis for ESPM model.
 
   run "LSA_CA_main.m"
+- Parameter_Identification: examples showing how to perform parameter identification based on 3 types of current-voltage data for ESPM model.
+
+  run "Parameter_identification_main.m"
   
 # Software dependencies
 - MATLAB 2018b and later
