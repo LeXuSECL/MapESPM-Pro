@@ -39,8 +39,13 @@ I_data=data.I_data;
 t_data=data.t_data;
 SOC_IC=data.SOC_IC;
 T_amb=23;
+
+int_method=data.int_method;
+model_type=data.model_type;
+battery_type=data.battery_type;
+
 [V_cell, R_l, T_core, T_surf,soc_bulk_n, soc_bulk_p, cs_n, cs_p,...
-          V_oc,param,ocp_p,ocp_n,eta_p,eta_n,ce,eta_ele] = ESPM_main(x_opt,t_data,I_data,SOC_IC,T_amb,profile_flag);
+          V_oc,param,ocp_p,ocp_n,eta_p,eta_n,ce,eta_ele] = ESPM_main(x_opt,t_data,I_data,SOC_IC,T_amb,profile_flag,int_method,model_type,battery_type);
       
 SA_tot.V{SAkk}=V_cell';
 SA_tot.socp{SAkk}=soc_bulk_p';

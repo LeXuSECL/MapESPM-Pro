@@ -42,7 +42,7 @@
 
 function [V_cell, R_l, T_core, T_surf,soc_bulk_n, soc_bulk_p, cs_n, cs_p,...
           V_oc,param,ocp_p,ocp_n,eta_p,eta_n,ce,eta_ele] = ESPM_main(x, t_data, I_data, ...
-   SOC_IC,T_amb,profile_flag) 
+   SOC_IC,T_amb,profile_flag,int_method,model_type,battery_type) 
 
 % -------------------------------------------------------------------------
 % SPECIFY: Finite Volume Method (FVM) Discretization Settings
@@ -60,6 +60,9 @@ param.profile_flag=profile_flag;
 param.t_data = t_data;
 param.I_data = I_data;                        
 
+param.int_method=int_method;
+param.model_type=model_type;
+param.battery_type=battery_type;
 % -------------------------------------------------------------------------
 % Initialize all model parameters
 % -------------------------------------------------------------------------
@@ -122,10 +125,11 @@ function [V_cell, R_l, T_core, T_surf,soc_bulk_n, soc_bulk_p, cs_n, cs_p,...
           V_oc,param,ocp_p,ocp_n,eta_p,eta_n,ce,eta_ele] = Module_Run_casadi(x_initial,param)
 % Load the solver      
 import casadi.*      
-global int_method model_type
-
-
 param.TIMEOLD = datetime('now','Format','HHmmss');
+
+int_method=param.int_method;
+model_type=param.model_type;
+battery_type=param.battery_type;
 
 %% Define all the governing equations for ESPM model
 totN=size(x_initial,1);
@@ -252,13 +256,24 @@ index_cc=find(param.I_data<0);
 index_dc=find(param.I_data>0);
 index_rest=find(param.I_data==0);
 
-ocp_p(index_cc)=U_p_cc(theta_surf_p(index_cc));
-ocp_p(index_dc)=U_p_dis(theta_surf_p(index_dc));
-ocp_p(index_rest)=(U_p_dis(theta_surf_p(index_rest))+U_p_dis(theta_surf_p(index_rest)))/2;
+if battery_type==1
+    ocp_p(index_cc)=U_p_cc_NMC_Panasonic(theta_surf_p(index_cc));
+    ocp_p(index_dc)=U_p_dis_NMC_Panasonic(theta_surf_p(index_dc));
+    ocp_p(index_rest)=(U_p_dis_NMC_Panasonic(theta_surf_p(index_rest))+U_p_dis_NMC_Panasonic(theta_surf_p(index_rest)))/2;
+    
+    ocp_n(index_cc)=U_n_cc_NMC_Panasonic(theta_surf_n(index_cc));
+    ocp_n(index_dc)=U_n_dis_NMC_Panasonic(theta_surf_n(index_dc));
+    ocp_n(index_rest)=(U_n_dis_NMC_Panasonic(theta_surf_n(index_rest))+U_n_dis_NMC_Panasonic(theta_surf_n(index_rest)))/2;
+elseif battery_type==2
+    ocp_p(index_cc)=U_p_cc_NMC_LG(theta_surf_p(index_cc));
+    ocp_p(index_dc)=U_p_dis_NMC_LG(theta_surf_p(index_dc));
+    ocp_p(index_rest)=(U_p_dis_NMC_LG(theta_surf_p(index_rest))+U_p_dis_NMC_LG(theta_surf_p(index_rest)))/2;
+    
+    ocp_n(index_cc)=U_n_cc_NMC_LG(theta_surf_n(index_cc));
+    ocp_n(index_dc)=U_n_dis_NMC_LG(theta_surf_n(index_dc));
+    ocp_n(index_rest)=(U_n_dis_NMC_LG(theta_surf_n(index_rest))+U_n_dis_NMC_LG(theta_surf_n(index_rest)))/2;
 
-ocp_n(index_cc)=U_n_cc(theta_surf_n(index_cc));
-ocp_n(index_dc)=U_n_dis(theta_surf_n(index_dc));
-ocp_n(index_rest)=(U_n_dis(theta_surf_n(index_rest))+U_n_dis(theta_surf_n(index_rest)))/2;
+end
 %%
 
 % ======Calculate overpotential
@@ -354,137 +369,7 @@ etae2=Iinput/(2*param.A)*(Lp/keffp+2*Ls/keffs+Ln/keffn);
 etae=etae1-etae2;
 end
 
-% -------------------------------------------------------------------------
-% Function for Un charge
-% -------------------------------------------------------------------------
-function y = U_n_cc(x)
-% Un charge as a function of SOC
-% Below are the parameters of the Un charge curve
-par=[1056906.89598384,0,-2689073.86515939,0,0,-4621784.83877322,509132.488750815,5611545.23157032,3032506.44367608,-2110204.58197130,-3959976.54182831,-160624.788244324,1854791.95269040,266589.673231300,-345689.450777555,-42426.6577404344,15322.0182869209,1.04719443819735];
-a0=par(1);
-a1=par(2);
-b1=par(3);
-a2=par(4);
-b2=par(5);
-a3=par(6);
-b3=par(7);
-a4=par(8);
-b4=par(9);
-a5=par(10);
-b5=par(11);
-a6=par(12);
-b6=par(13);
-a7=par(14);
-b7=par(15);
-a8=par(16);
-b8=par(17);
-w=par(18);
-% x is the SOC, given SOC as input, the output is OCP
-y=a0 + a1*cos(x*w) + b1*sin(x*w) + ...
-a2*cos(2*x*w) + b2*sin(2*x*w) + a3*cos(3*x*w) + b3*sin(3*x*w) + ...
-a4*cos(4*x*w) + b4*sin(4*x*w) + a5*cos(5*x*w) + b5*sin(5*x*w) + ...
-a6*cos(6*x*w) + b6*sin(6*x*w) + a7*cos(7*x*w) + b7*sin(7*x*w) + ...
-a8*cos(8*x*w) + b8*sin(8*x*w);
-end
 
-% -------------------------------------------------------------------------
-% Function for Un discharge
-% -------------------------------------------------------------------------
-function y = U_n_dis(x)
-% Un discharge as a function of SOC
-% Below are the parameters of the Un discharge curve
-par=[-77379.6258610637,0,211536.280133149,0,0,394664.275692445,-78146.7574323678,-546030.847477876,-218492.590911161,261424.418592925,361318.557117052,-13252.4306514239,-200845.609381728,-24542.0560032409,45489.2190270259,5117.79196290630,-2887.95721989976,1.04719578297250];
-a0=par(1);
-a1=par(2);
-b1=par(3);
-a2=par(4);
-b2=par(5);
-a3=par(6);
-b3=par(7);
-a4=par(8);
-b4=par(9);
-a5=par(10);
-b5=par(11);
-a6=par(12);
-b6=par(13);
-a7=par(14);
-b7=par(15);
-a8=par(16);
-b8=par(17);
-w=par(18);
-% x is the SOC, given SOC as input, the output is OCP
-y=a0 + a1*cos(x*w) + b1*sin(x*w) + ...
-a2*cos(2*x*w) + b2*sin(2*x*w) + a3*cos(3*x*w) + b3*sin(3*x*w) + ...
-a4*cos(4*x*w) + b4*sin(4*x*w) + a5*cos(5*x*w) + b5*sin(5*x*w) + ...
-a6*cos(6*x*w) + b6*sin(6*x*w) + a7*cos(7*x*w) + b7*sin(7*x*w) + ...
-a8*cos(8*x*w) + b8*sin(8*x*w);
-end
-
-% -------------------------------------------------------------------------
-% Function for Up charge
-% -------------------------------------------------------------------------
-function y = U_p_cc(x)
-% Up charge as a function of SOC
-% Below are the parameters of the Up charge curve
-par=[36439928.6635994,-41721043.6266609,-25431018.9200839,0,0,-2326719.38249511,32445226.6017429,19643144.6396902,-27559278.1451687,-17637319.7219740,7534682.97551583,6599125.42991595,959131.376944491,-1036700.98011868,-860374.830484993,39589.4839541989,115858.079543840,1.04719756661260];
-a0=par(1);
-a1=par(2);
-b1=par(3);
-a2=par(4);
-b2=par(5);
-a3=par(6);
-b3=par(7);
-a4=par(8);
-b4=par(9);
-a5=par(10);
-b5=par(11);
-a6=par(12);
-b6=par(13);
-a7=par(14);
-b7=par(15);
-a8=par(16);
-b8=par(17);
-w=par(18);
-% x is the SOC, given SOC as input, the output is OCP
-y=a0 + a1*cos(x*w) + b1*sin(x*w) + ...
-a2*cos(2*x*w) + b2*sin(2*x*w) + a3*cos(3*x*w) + b3*sin(3*x*w) + ...
-a4*cos(4*x*w) + b4*sin(4*x*w) + a5*cos(5*x*w) + b5*sin(5*x*w) + ...
-a6*cos(6*x*w) + b6*sin(6*x*w) + a7*cos(7*x*w) + b7*sin(7*x*w) + ...
-a8*cos(8*x*w) + b8*sin(8*x*w);
-end
-
-% -------------------------------------------------------------------------
-% Function for Up discharge
-% -------------------------------------------------------------------------
-function y = U_p_dis(x)
-% Up discharge as a function of SOC
-% Below are the parameters of the Up discharge curve
-par=[-39033981.1321803,47127267.0820635,22798594.8315349,0,0,-7585030.20786143,-34088437.8332242,-8361427.70351725,35422374.5930115,13040230.4868199,-16038555.1349497,-6528177.95774521,3051057.71037441,1460174.08797285,20197.2134023230,-119050.203844771,-59717.2026753066,1.04719756256240];
-a0=par(1);
-a1=par(2);
-b1=par(3);
-a2=par(4);
-b2=par(5);
-a3=par(6);
-b3=par(7);
-a4=par(8);
-b4=par(9);
-a5=par(10);
-b5=par(11);
-a6=par(12);
-b6=par(13);
-a7=par(14);
-b7=par(15);
-a8=par(16);
-b8=par(17);
-w=par(18);
-% x is the SOC, given SOC as input, the output is OCP
-y=a0 + a1*cos(x*w) + b1*sin(x*w) + ...
-a2*cos(2*x*w) + b2*sin(2*x*w) + a3*cos(3*x*w) + b3*sin(3*x*w) + ...
-a4*cos(4*x*w) + b4*sin(4*x*w) + a5*cos(5*x*w) + b5*sin(5*x*w) + ...
-a6*cos(6*x*w) + b6*sin(6*x*w) + a7*cos(7*x*w) + b7*sin(7*x*w) + ...
-a8*cos(8*x*w) + b8*sin(8*x*w);
-end
 
 % -------------------------------------------------------------------------
 % This is the Hermite Interpolation Method

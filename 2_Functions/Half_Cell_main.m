@@ -1,4 +1,5 @@
   function J = Half_Cell_main(x,data) 
+  battery_type=data.battery_type;
   % Due to hysterisis, Un for charge and discharge are different
   % Those are four stochimotery parameters for discharge
         thetap100=x(1);
@@ -6,11 +7,13 @@
         thetan100=x(3);
         thetan0=x(4);
         
+        if battery_type==1
   % Those are four stochimotery parameters for charge      
         thetap100ch=x(5);
         thetap0ch=x(6);
         thetan100ch=x(7);
         thetan0ch=x(8);
+        end
 
         warning off
         try
@@ -27,7 +30,9 @@
         Vsim=intOCVp-flip(intOCVn);
         Vexp=Vocfull;
   
-        J1=rms(Vsim-Vexp)*1000;                                    
+        J1=rms(Vsim-Vexp)*1000;      
+        J=J1;
+        if battery_type==1
         Vocfull=data.Vocfull_CC;
         
         totnum=data.intnum_CC;
@@ -41,6 +46,7 @@
         Vexp=Vocfull;
             J2=rms(Vsim-Vexp)*1000;           
             J=J1+J2;
+        end
         catch
             J = 10^3;
         end

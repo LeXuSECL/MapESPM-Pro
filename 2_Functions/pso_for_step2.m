@@ -1,6 +1,7 @@
 function [x_opt, fval, history] = pso_for_step2(swarm_size, max_stalls, Initial_position, Lower_bound, Upper_bound,data)
 model_type=data.model_type;
 int_method=data.int_method;
+battery_type=data.battery_type;
 x_opt_raw=data.x_opt;
 I_data=data.I_data;
 t_data=data.t_data;
@@ -11,13 +12,8 @@ refsocp=data.refsocp;
 refsocn=data.refsocn;
 profile_flag=data.profile_flag;
 
-if profile_flag==0
-tot_obj_err=0.005;
-elseif profile_flag==2
-tot_obj_err=0.0055;
-elseif profile_flag==3
-tot_obj_err=0.005;
-end
+
+obj_err=data.obj;
 
     history = [];
 
@@ -27,11 +23,11 @@ end
                        'MaxStallIterations',max_stalls,...
                        'PlotFcn','pswplotbestf',...
                        'FunctionTolerance',1e-4,...
-                       'ObjectiveLimit',tot_obj_err,...
+                       'ObjectiveLimit',obj_err,...
                        'InitialSwarmMatrix',Initial_position,...
                        'Display','iter',...
                        'SocialAdjustmentWeight',2,...
-                       'SelfAdjustmentWeight',0.02, ...
+                       'SelfAdjustmentWeight',0.2, ...
                        'UseParallel',true, ...
                        'OutputFcn', @myoutput);
 
@@ -73,7 +69,7 @@ end
         warning off
         try
       %%  Simulation
-        [V_cell,soc_bulk_p,soc_bulk_n]=fun_espm(x_opt_raw,I_data,t_data,SOC_IC,profile_flag,int_method,model_type);
+        [V_cell,soc_bulk_p,soc_bulk_n]=fun_espm(x_opt_raw,I_data,t_data,SOC_IC,profile_flag,int_method,model_type,battery_type);
 
            if sum(isreal(V_cell)) == 0 
                J = 10^3;
@@ -91,15 +87,10 @@ end
 
 
 
-function [V_cell,soc_bulk_p,soc_bulk_n,param] = fun_espm(x_opt,I_data,t_data,SOC_IC,profile_flag,int_method_use,model_type_use)
+function [V_cell,soc_bulk_p,soc_bulk_n,param] = fun_espm(x_opt,I_data,t_data,SOC_IC,profile_flag,int_method,model_type,battery_type)
 
 
-global int_method model_type
 
-
-int_method=int_method_use;
-model_type=model_type_use;
-%%
 
 
 
@@ -110,7 +101,7 @@ T_amb=23;
 %% =====Run SPM or ESPM
 
 [V_cell, R_l, T_core, T_surf,soc_bulk_n, soc_bulk_p, cs_n, cs_p,...
-          V_oc,param,ocp_p,ocp_n,eta_p,eta_n,ce,eta_ele] = ESPM_main(x_opt,t_data,I_data,SOC_IC,T_amb,profile_flag);
+          V_oc,param,ocp_p,ocp_n,eta_p,eta_n,ce,eta_ele] = ESPM_main(x_opt,t_data,I_data,SOC_IC,T_amb,profile_flag,int_method,model_type,battery_type);
 
 end
 
