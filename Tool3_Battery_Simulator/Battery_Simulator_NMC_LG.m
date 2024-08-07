@@ -165,7 +165,7 @@ int_method = 1;
 model_type = 2;
 
 % Define which type of battery is used
-% battery_type=1; % NMC_Pansonic
+% battery_type=1; % NMC_C
 % battery_type=2; % NMC_LG
 battery_type=2;
 

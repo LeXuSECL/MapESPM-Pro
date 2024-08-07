@@ -22,7 +22,7 @@ addpath ('../2_Functions')
 % -------------------------------------------------------------------------
 % The input for PSO identification is [I, V, t, SOC].
 % -------------------------------------------------------------------------
-% In this toolbox, the Panasonic aging experiment data are
+% In this toolbox, the aging experiment data are
 % stored in a folder named "0_Data".
 % Each data file contains 5 types of data:
 % (1) C/2 charge, (2) C/2 discharge, (3) C/40 charge, (4) C/40 discharge, (5) HPPC.
@@ -45,7 +45,7 @@ clearvars -except current_use_cell tot_use_cell
 % -------------------------------------------------------------------------
 
 % -------------------------------------------------------------------------
-% Because the cell used in the Panasonic experiment is Si+Gr, we have hysteresis.
+% Because the cell used in the experiment is Si+Gr, we have hysteresis.
 % Therefore, we use Up_cc and Un_cc for charge data
 % and use Up_dis and Un_dis for discharge data.
 % This means we need to identify 4 stoichiometry [θp, θn] for Up_cc and Un_cc
@@ -58,7 +58,7 @@ clearvars -except current_use_cell tot_use_cell
 % The x-axis for both Up and Un is the state of lithium (θ).
 % The y-axis for both Up and Un is the open-circuit voltage (OCV).
 % -------------------------------------------------------------------------
-load('../0_Data/NMC_Panasonic/OCV_NMC_Panasonic.mat')
+load('../0_Data/NMC_C/OCV_NMC_C.mat')
 data.OCV=OCV;
 
 % -------------------------------------------------------------------------
@@ -67,9 +67,9 @@ data.OCV=OCV;
 % -------------------------------------------------------------------------
 cell_num=tot_use_cell(current_use_cell);
 if cell_num<10
-FullVraw=load(['../0_Data/NMC_Panasonic/Panasonic-00',num2str(cell_num),'.mat']);
+FullVraw=load(['../0_Data/NMC_C/C-00',num2str(cell_num),'.mat']);
 else
-FullVraw=load(['../0_Data/NMC_Panasonic/Panasonic-0',num2str(cell_num),'.mat']);
+FullVraw=load(['../0_Data/NMC_C/C-0',num2str(cell_num),'.mat']);
 end
 
 % -------------------------------------------------------------------------
@@ -265,9 +265,9 @@ clearvars -except  tot_profile_flag tot_obj tot_pso_flag tot_use cell_num tot_er
 % -------------------------------------------------------------------------
 profile_flag=tot_profile_flag(tot_use);
 if cell_num<10
-data=load(['../0_Data/NMC_Panasonic/Panasonic-00',num2str(cell_num),'.mat']);
+data=load(['../0_Data/NMC_C/C-00',num2str(cell_num),'.mat']);
 else
-data=load(['../0_Data/NMC_Panasonic/Panasonic-0',num2str(cell_num),'.mat']);
+data=load(['../0_Data/NMC_C/C-0',num2str(cell_num),'.mat']);
 end
 
 if profile_flag==0
@@ -363,7 +363,7 @@ int_method = 1;
 model_type = 2;
 
 % Define which type of battery is used
-% battery_type=1; % NMC_Pansonic
+% battery_type=1; % NMC_C
 % battery_type=2; % NMC_LG
 battery_type=1;
 
@@ -653,7 +653,7 @@ set(gcf,'unit','centimeters','position',[5 5 26 20])
 savefig(gcf, ['../Figures/Validation_',num2str(tot_use),'.fig']); % Save figure as .fig file
 
 save('check.mat','x_opt')
-save(['../ESPM_Parameters/NMC_Panasonic_cell_',num2str(cell_num),'.mat'],'x_opt')
+save(['../ESPM_Parameters/NMC_C_cell_',num2str(cell_num),'.mat'],'x_opt')
 end
 
 % -------------------------------------------------------------------------

@@ -29,7 +29,7 @@ addpath ('../2_Functions')
 % (3) Experimental measured Voltage (For comparsion use)
 % (4) Experimental measured cell SOC (For comparsion use)
 % -------------------------------------------------------------------------
-% In this toolbox, the Panasonic aging experiment data are
+% In this toolbox, the aging experiment data are
 % stored in a folder named "0_Data".
 % Each data file contains 5 types of data:
 % (1) C/2 charge, (2) C/2 discharge, (3) C/40 charge, (4) C/40 discharge, (5) HPPC.
@@ -72,9 +72,9 @@ clearvars -except  tot_profile_flag tot_pso_flag tot_use cell_num tot_err curren
 % -------------------------------------------------------------------------
 profile_flag=tot_profile_flag(tot_use);
 if cell_num<10
-data=load(['../0_Data/NMC_Panasonic/Panasonic-00',num2str(cell_num),'.mat']);
+data=load(['../0_Data/NMC_C/C-00',num2str(cell_num),'.mat']);
 else
-data=load(['../0_Data/NMC_Panasonic/Panasonic-0',num2str(cell_num),'.mat']);
+data=load(['../0_Data/NMC_C/C-0',num2str(cell_num),'.mat']);
 end
 
 if profile_flag==0
@@ -171,7 +171,7 @@ int_method = 1;
 model_type = 2;
 
 % Define which type of battery is used
-% battery_type=1; % NMC_Pansonic
+% battery_type=1; % NMC_C
 % battery_type=2; % NMC_LG
 battery_type=1;
 
@@ -204,7 +204,7 @@ end
 % -------------------------------------------------------------------------
 % Load ESPM model parameters
 % -------------------------------------------------------------------------
-x_opt=load('../ESPM_Parameters/NMC_Panasonic_cell_13.mat');
+x_opt=load('../ESPM_Parameters/NMC_C_cell_13.mat');
 x_opt=x_opt.x_opt;
 
 % Model Simulation
