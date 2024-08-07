@@ -29,7 +29,7 @@ addpath ('../2_Functions')
 % (3) Experimental measured Voltage (For comparsion use)
 % (4) Experimental measured cell SOC (For comparsion use)
 % -------------------------------------------------------------------------
-% In this toolbox, the ZOOX aging experiment data conducted at SLAC are
+% In this toolbox, the aging experiment data conducted at SLAC are
 % stored in a folder named "0_Data".
 % Each data file contains 5 types of data:
 % (1) C/2 charge, (2) C/2 discharge, (3) C/40 charge, (4) C/40 discharge, (5) HPPC.
